@@ -1,6 +1,3 @@
-# Base16 palette (gruvbox dark medium) shared across wrapped programs.
-# `theme` values are prefixed with "#" (kitty, zathura); `themeNoHash` are raw
-# hex values (niri, which adds its own "#").
 { lib, ... }: let
   palette = {
     base00 = "282828";

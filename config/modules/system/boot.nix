@@ -3,7 +3,7 @@
     boot.loader = {
       systemd-boot.enable = lib.mkForce false;
       efi.canTouchEfiVariables = true;
-      timeout = 0;
+      timeout = 5;
     };
 
     boot.lanzaboote = {
@@ -30,6 +30,7 @@
         "rd.udev.log_level=3"
         "rd.systemd.show_status=auto"
       ];
+      kernelModules = ["mt7921e" "coretemp" "cpuid" "v4l2loopback"];
     };
   };
 }

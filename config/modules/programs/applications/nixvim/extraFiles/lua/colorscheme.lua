@@ -1,5 +1,3 @@
--- Gruvbox dark medium, matching the foot terminal palette exactly
--- (see modules/wrapped-programs/foot.nix).
 local COLORSCHEME = {
     base00 = "#282828", -- foot background
     base01 = "#3c3836",

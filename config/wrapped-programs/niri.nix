@@ -7,20 +7,10 @@
 
     options.terminal = lib.mkOption {
       type = lib.types.str;
-      default = "alacritty";
+      default = "kitty";
     };
 
     config = {
-      # nixpkgs installs the unit under lib/, not share/. Also disable
-      # hot-reload: upstream appends to share/systemd/user/niri.service,
-      # which does not exist on current niri and breaks the wrap.
-      filesToPatch = [
-        "lib/systemd/user/niri.service"
-        "share/wayland-sessions/*.desktop"
-      ];
-      disableConfigHotReload = true;
-      passthru.providedSessions = [ "niri" ];
-
       settings = let
         noctaliaExe = lib.getExe self.packages.${config.pkgs.stdenv.hostPlatform.system}.noctalia-shell;
       in {
@@ -33,10 +23,6 @@
         
         hotkey-overlay = {
             skip-at-startup = _: {};
-        };
-
-        debug = {
-          disable-cursor-plane = _: {};
         };
 
         input = {
@@ -61,10 +47,10 @@
           };
 
           tablet = {
-            map-to-output = "HDMI-A-1";
+            map-to-output = "DP-2";
           };
           touch = {
-            map-to-output = "HDMI-A-1";
+            map-to-output = "DP-2";
           };
         };
 
@@ -162,14 +148,14 @@
 
         outputs = {
           "DP-3" = {
-            mode = "1920x1080@179.998";
+            mode = "1920x1080@180";
             scale = 1;
             position = _: {props = {x = 0; y = 0;};};
           };
           "DP-2" = {
-            mode = "3860x2160@60.000";
+            mode = "3840x2160";
             scale = 2;
-            position = _: {props = {x = 1080; y = 0;};};
+            position = _: {props = {x = 1920; y = 0;};};
           };
         };
 

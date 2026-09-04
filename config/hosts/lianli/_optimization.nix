@@ -9,7 +9,12 @@
 
   services.xserver.videoDrivers = [ "amdgpu" ];
   powerManagement.cpuFreqGovernor = "performance";
-  boot.kernelParams = [ "amd_pstate=active" ];
+  boot.kernelParams = [
+    "amd_pstate=active"
+    # Mesa aborts niri on GPU reset (amdgpu_ctx_set_sw_reset_status). Keep
+    # kernel recovery enabled so a hang from GIMP/gamescope is not fatal.
+    "amdgpu.gpu_recovery=1"
+  ];
 
   # NVMe already mounts with discard=async; fstrim still helps unused ranges.
   services.fstrim.enable = true;

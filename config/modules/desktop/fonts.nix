@@ -9,6 +9,7 @@
       cm_unicode
       unifont
     ];
+    fonts.fontDir.enable = true;
 
     fonts.fontconfig.defaultFonts = {
       serif = [ "Ubuntu Sans" ];

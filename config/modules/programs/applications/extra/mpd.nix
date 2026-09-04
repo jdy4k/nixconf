@@ -1,6 +1,6 @@
 { self, ... }: {
   flake.nixosModules.mpd = { pkgs, ... }: let
-    selfpkgs = self.packages."${pkgs.system}";
+    selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     user = "jdy4k";
   in {
     environment.systemPackages = [

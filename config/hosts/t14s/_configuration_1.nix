@@ -64,11 +64,11 @@ in {
       enable = true;
       settings = {
         initial_session = {
-          command = "${self.packages.${pkgs.system}.niri}/bin/niri-session";
+          command = "${self.packages.${pkgs.stdenv.hostPlatform.system}.niri}/bin/niri-session";
           user = "${user}";
         };
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --greeting 'Welcome to NixOS!' --asterisks --remember --remember-user-session --time -cmd ${self.packages.${pkgs.system}.niri}/bin/niri-session";
+          command = "${pkgs.tuigreet}/bin/tuigreet --greeting 'Welcome to NixOS!' --asterisks --remember --remember-user-session --time -cmd ${self.packages.${pkgs.stdenv.hostPlatform.system}.niri}/bin/niri-session";
           user = "greeter";
         };
       };

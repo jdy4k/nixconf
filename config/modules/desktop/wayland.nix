@@ -1,14 +1,13 @@
 # Niri desktop: compositor, terminal, auto-login, and session variables.
 { self, ... }: {
-  flake.nixosModules.desktop = { pkgs, ... }: let
-    selfpkgs = self.packages.${pkgs.system};
+  flake.nixosModules.desktop = { pkgs, lib, ... }: let
+    selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   in {
     programs.niri.enable = true;
     programs.niri.package = selfpkgs.niri;
 
     environment.systemPackages = [
-      # selfpkgs.foot
-      selfpkgs.alacritty
+      selfpkgs.kitty
       selfpkgs.fish
       pkgs.pcmanfm
     ];

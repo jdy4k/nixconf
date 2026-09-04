@@ -1,4 +1,3 @@
-# Gruvbox dark everywhere possible: GTK 3/4, dconf, Qt, and icons.
 { ... }: {
   flake.nixosModules.desktop = { pkgs, lib, ... }: let
     # Note: pkgs.gruvbox-dark-gtk takes no variant arguments, and the

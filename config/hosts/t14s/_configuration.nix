@@ -1,5 +1,4 @@
-{ inputs, self, pkgs, ... }: let
-  selfpkgs = self.packages."${pkgs.system}";
+{ inputs, self, ... }: let
   user = "jdy4k";
   host = "t14s";
 in {

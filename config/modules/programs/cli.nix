@@ -1,7 +1,7 @@
 # CLI tools, installed globally.
 { self, ... }: {
   flake.nixosModules.cli = { pkgs, ... }: let
-    selfpkgs = self.packages.${pkgs.system};
+    selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   in {
     environment.systemPackages = (with pkgs; [
       # Nix tooling
@@ -40,7 +40,6 @@
     ]) ++ [
       # Wrapped packages from this flake
       selfpkgs.git
-      selfpkgs.neovimDynamic
     ];
   };
 }

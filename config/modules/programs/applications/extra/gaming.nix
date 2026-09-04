@@ -12,8 +12,6 @@
     ];
     programs.steam = {
       enable = true;
-      # Valve #13174: 32-bit libaudio.so SIGSEGV on pipewire-pulse card-info.
-      # CEF compositing also races with xwayland-satellite (black window).
       package = pkgs.steam.override {
         extraArgs = "-cef-disable-gpu-compositing";
         extraEnv = {

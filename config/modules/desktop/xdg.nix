@@ -16,6 +16,8 @@
         "x-scheme-handler/https" = "librewolf.desktop";
         "x-scheme-handler/about" = "librewolf.desktop";
         "x-scheme-handler/unknown" = "librewolf.desktop";
+        "text/html" = "librewolf.desktop";
+        "application/xhtml+xml" = "librewolf.desktop";
 
         "inode/directory" = "pcmanfm.desktop";
 

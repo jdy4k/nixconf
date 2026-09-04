@@ -8,11 +8,13 @@ in {
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.impermanence.nixosModules.impermanence
+      inputs.nixvim.nixosModules.nixvim  
+
       self.nixosModules."host-${host}"
     ];
   };
 
-  flake.nixosModules."host-${host}" = { config, lib, ... }: {
+  flake.nixosModules."host-${host}" = { config, lib, pkgs, ... }: {
     imports = [
       ./_hardware-configuration.nix
       ./_disk-configuration.nix
@@ -31,6 +33,7 @@ in {
       self.nixosModules.discord
 
       self.nixosModules.libreoffice
+      self.nixosModules.gimp
     ];
 
     users.users."${user}" = {
@@ -55,23 +58,27 @@ in {
     };
 
     nixpkgs.config.allowUnfree = false;
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-      "cnijfilter2" # Pixma printer drivers
-      "steam"
-      "steam-original"
-      "steam-unwrapped"
-      "steam-run"
-    ];
+
 
     networking.hostName = "${host}";
 
     services.greetd = {
       enable = true;
-      settings.default_session = {
-        command = lib.getExe' config.programs.niri.package "niri-session";
-        user = user;
+      useTextGreeter = true;
+      settings = {
+        initial_session = {
+          command = lib.getExe' config.programs.niri.package "niri-session";
+          user = user;
+        };
+        default_session = {
+          command = "${lib.getExe pkgs.tuigreet} --time --asterisks --remember --remember-user-session -cmd ${lib.getExe' config.programs.niri.package "niri-session"}";
+          user = "greeter";
+        };
       };
     };
+    # nixpkgs only sets restartIfChanged=false; wrap rebuilds change the
+    # niri-session store path in greetd.toml and would otherwise stop greetd.
+    systemd.services.greetd.stopIfChanged = false;
     # Focusrite Scarlett 2i2 4th Gen (USB pid 0x8219 — 0x8212 is 3rd gen)
     boot.extraModprobeConfig = ''
       options snd_usb_audio vid=0x1235 pid=0x8219 device_setup=1

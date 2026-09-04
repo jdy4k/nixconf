@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.desktop = {pkgs, ...}: {      
+  flake.nixosModules.desktop = { lib, pkgs, ... }: {
     i18n.inputMethod = {
       enable = true;
       type = "fcitx5";
@@ -28,21 +28,14 @@
       };
     };
 
-    systemd.services.fcitx5-daemon = {
-      description = "Fcitx5 Input Method Editor";
-      partOf = [ "graphical-session.target" ];
-      after = [ "graphical-session.target" ];
-      requisite = [ "graphical-session.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.fcitx5}/bin/fcitx5 -d --replace";
-        Restart = "on-failure";
-      };
-    };
-
-    environment.sessionVariables = {
+    environment.variables = {
       XMODIFIERS = "@im=fcitx";
-      GTK_IM_MODULE = "fcitx";
-      QT_IM_MODULE = "fcitx";
+      GTK_IM_MODULE = lib.mkForce "";
+      QT_IM_MODULE = lib.mkForce "";
+    };
+    environment.sessionVariables = {
+      GTK_IM_MODULE = lib.mkForce "";
+      QT_IM_MODULE = lib.mkForce "";
     };
   };
 }

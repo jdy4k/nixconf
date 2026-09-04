@@ -22,6 +22,10 @@
     wrappers.url = "github:Lassulus/wrappers";
     wrapper-modules.url = "github:BirdeeHub/nix-wrapper-modules";    
     hjem.url = "github:feel-co/hjem";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake {inherit inputs;} (inputs.import-tree ./config);

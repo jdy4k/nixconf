@@ -60,11 +60,11 @@
     packages.mpv = inputs.wrapper-modules.wrappers.mpv.wrap {
       inherit pkgs;
       imports = [self.wrapperModules.mpv];
-      scripts = with pkgs.mpvScripts; [
-        autosubsync-mpv
-        mpvacious
-        uosc
-      ];
+      script = {
+        autosubsync-mpv.path = pkgs.mpvScripts.autosubsync-mpv;
+        mpvacious.path = pkgs.mpvScripts.mpvacious;
+        uosc.path = pkgs.mpvScripts.uosc;
+      };
     };
   };
 }
