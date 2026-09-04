@@ -1,5 +1,5 @@
 { ... }: {
-  flake.nixosModules.nushell = { lib, pkgs, ... }: {
+  flake.nixosModules.nushell = { lib, pkgs, config, ... }: {
     environment.systemPackages = [
       pkgs.nushell
     ];
@@ -8,8 +8,8 @@
       "TERM_SHELL" = "nu";
     };
 
-    hjem.users.jdy4k = {
-      directory = "/home/jdy4k";
+    hjem.users."${config.preferences.user.name}" = {
+      directory = "/home/${config.preferences.user.name}";
       files.".config/nushell/config.nu".text = ''
         # Common ls aliases and sort them by type and then name
         # Inspired by https://github.com/nushell/nushell/issues/7190

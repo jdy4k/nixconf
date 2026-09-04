@@ -4,10 +4,10 @@
       noctalia-shell = inputs.wrapper-modules.wrappers.noctalia-shell.wrap {
         inherit pkgs;
         package = pkgs.noctalia-shell.overrideAttrs {
-          name = "vjnoctalia2";
+          name = "jdy4knoctalia";
         };
         env = {
-          "NOCTALIA_CACHE_DIR" = "/home/jdy4k/.cache/vj-noctalia/";
+          "NOCTALIA_CACHE_DIR" = "/home/jdy4k/.cache/jdy4k-noctalia/";
         };
         colors = {
           mError = "#fb4934";
@@ -246,7 +246,7 @@
           };
           general = {
             telemetryEnabled = false;
-            avatarImage = "/home/jdy4k/nixconf/assets/avatar.jpg";
+            # avatarImage = "/$HOME/nixconf/avatar.jpg";
             allowPanelsOnScreenWithoutBar = true;
             animationDisabled = false;
             animationSpeed = 1;

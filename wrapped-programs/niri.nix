@@ -5,9 +5,30 @@
 }: {
   flake.wrapperModules.niri = { config, lib, ...}: {
 
+    options.screenshot_dir = lib.mkOption {
+      type = lib.types.str;
+      default = "Pictures";
+    };
+
     options.terminal = lib.mkOption {
       type = lib.types.str;
       default = "kitty";
+    };
+
+    options.monitors = lib.mkOption {
+      type = lib.types.attrsOf (lib.types.submodule {
+        options = {
+          enable = lib.mkOption { type = lib.types.bool; default = true; };
+          primary = lib.mkOption { type = lib.types.bool; default = false; };
+          width = lib.mkOption { type = lib.types.int; };
+          height = lib.mkOption { type = lib.types.int; };
+          scale = lib.mkOption { type = lib.types.number; default = 1; };
+          refreshRate = lib.mkOption { type = lib.types.number; };
+          x = lib.mkOption { type = lib.types.int; };
+          y = lib.mkOption { type = lib.types.int; };
+        };
+      });
+      default = {};
     };
 
     config = {
@@ -78,14 +99,12 @@
           "Mod+3".focus-workspace = "w2";
           "Mod+4".focus-workspace = "w3";
           "Mod+5".focus-workspace = "w4";
-          "Mod+0".focus-workspace = "wl";
 
           "Mod+Shift+1".move-column-to-workspace = "w0";
           "Mod+Shift+2".move-column-to-workspace = "w1";
           "Mod+Shift+3".move-column-to-workspace = "w2";
           "Mod+Shift+4".move-column-to-workspace = "w3";
           "Mod+Shift+5".move-column-to-workspace = "w4";
-          "Mod+Shift+0".move-column-to-workspace = "wl";
 
           "Mod+S".spawn-sh = "${noctaliaExe} ipc call launcher toggle";
           "XF86AudioMute".spawn-sh = ''${config.pkgs.alsa-utils}/bin/amixer sset Capture toggle'';
@@ -135,38 +154,34 @@
 
         workspaces = let
           settings = {layout.gaps = 8;};
-          primary = settings // {open-on-output = "DP-2";};
-          secondary = settings // {open-on-output = "DP-3";};
+          primary = settings // {open-on-output = 
+            lib.head (lib.attrNames (lib.filterAttrs (name: mon: mon.primary == true) 
+              config.monitors));};
         in {
           w0 = primary;
           w1 = primary;
           w2 = primary;
           w3 = primary;
           w4 = primary;
-          wl = secondary;
         };
 
-        outputs = {
-          "DP-3" = {
-            mode = "1920x1080@180";
-            scale = 1;
-            position = _: {props = {x = 0; y = 0;};};
-          };
-          "DP-2" = {
-            mode = "3840x2160";
-            scale = 2;
-            position = _: {props = {x = 1920; y = 0;};};
-          };
-        };
+        outputs = lib.mapAttrs (name: mon: {
+          mode = "${lib.toString mon.width}x${lib.toString mon.height}@${lib.toString mon.refreshRate}";
+          scale = mon.scale;
+          position = _: {props = {x = mon.x; y = mon.y;};};
+        }) (lib.filterAttrs (name: mon: mon.enable == true) config.monitors);
 
         xwayland-satellite.path =
           lib.getExe config.pkgs.xwayland-satellite;
 
-        screenshot-path = "~/local_pictures/screenshots/%Y-%m-%d %H-%M-%S.png";
+        screenshot-path = "~/${config.screenshot_dir}/screenshots/%Y-%m-%d %H-%M-%S.png";
 
         spawn-at-startup = [
           ["${config.pkgs.dbus}/bin/dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "DISPLAY" "XDG_CURRENT_DESKTOP"]
           noctaliaExe
+
+          # not working :(
+          "sleep 0.5 && niri msg action focus-workspace w0"
         ];
       };
     };

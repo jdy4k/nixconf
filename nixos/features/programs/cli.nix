@@ -1,8 +1,5 @@
-# CLI tools, installed globally.
-{ self, ... }: {
-  flake.nixosModules.cli = { pkgs, ... }: let
-    selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
-  in {
+{
+  flake.nixosModules.cli = { pkgs, config, ... }: {
     environment.systemPackages = (with pkgs; [
       # Nix tooling
       nil
@@ -35,11 +32,20 @@
       ffmpeg-full
       wl-clipboard
       yazi
-
+      git
       sbctl
-    ]) ++ [
-      # Wrapped packages from this flake
-      selfpkgs.git
-    ];
+    ]);
+    hjem.users.${config.preferences.user.name} = {
+      directory = "/home/${config.preferences.user.name}";
+      files.".gitconfig" = {
+        text =
+        ''
+        [user]
+	        email = ${config.preferences.user.email}
+	        name = ${config.preferences.user.name}
+        '';
+        clobber = true;
+      };
+    };
   };
 }

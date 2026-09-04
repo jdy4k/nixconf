@@ -1,5 +1,6 @@
 { ... }: {
-  flake.nixosModules.system = {
+  flake.nixosModules.system = { config, ... }: {
+    networking.hostName = "${config.preferences.host.name}";
     networking.networkmanager.enable = true;
     networking.firewall = {
       enable = true;

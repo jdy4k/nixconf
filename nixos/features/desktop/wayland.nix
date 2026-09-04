@@ -1,10 +1,20 @@
 # Niri desktop: compositor, terminal, auto-login, and session variables.
-{ self, ... }: {
-  flake.nixosModules.desktop = { pkgs, lib, ... }: let
+{ inputs, self, ... }: {
+  flake.nixosModules.desktop = { pkgs, config, ... }: let
     selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+    niri = inputs.wrapper-modules.wrappers.niri.wrap {
+      inherit pkgs;
+      imports = [
+        self.wrapperModules.niri
+        { 
+          monitors = config.preferences.monitors; 
+          screenshot_dir = config.preferences.xdg.pictures; 
+        }
+      ];
+    };
   in {
     programs.niri.enable = true;
-    programs.niri.package = selfpkgs.niri;
+    programs.niri.package = niri;
 
     environment.systemPackages = [
       selfpkgs.kitty

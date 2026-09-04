@@ -1,5 +1,5 @@
 {self, ...}: {
-  flake.nixosModules.system = {pkgs, ...}: let
+  flake.nixosModules.system = {pkgs, config, ...}: let
     selfpkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   in  {
     nix.settings = {
@@ -27,5 +27,9 @@
       selfpkgs.nh
       selfpkgs.ns
     ];
+
+    environment.sessionVariables = {
+      NH_FLAKE = "/home/${config.preferences.user.name}/nixconf";
+    };
   };
 }

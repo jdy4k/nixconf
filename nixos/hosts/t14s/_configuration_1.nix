@@ -1,4 +1,4 @@
-{ inputs, self, ... }: let
+{ inputs, self, pkgs, ... }: let
   user = "jdy4k";
   host = "lianli";
 in {
@@ -8,48 +8,41 @@ in {
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.impermanence.nixosModules.impermanence
-      inputs.nixvim.nixosModules.nixvim  
-
       self.nixosModules."host-${host}"
     ];
   };
 
-  flake.nixosModules."host-${host}" = { config, lib, pkgs, ... }: {
+  flake.nixosModules."host-${host}" = { lib, ... }: {
+    
     imports = [
       ./_hardware-configuration.nix
       ./_disk-configuration.nix
       ./_impermanence.nix
       ./_optimization.nix
-
+      ./_tlp.nix
+      
       self.nixosModules.system
       self.nixosModules.desktop
-
+      
       self.nixosModules.applications
       self.nixosModules.cli
       self.nixosModules.services
-      self.nixosModules.mullvad
-
-      self.nixosModules.gaming
-      self.nixosModules.discord
-
-      self.nixosModules.libreoffice
-      self.nixosModules.gimp
     ];
 
     users.users."${user}" = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" "video" "gamemode" ];
+      extraGroups = [ "wheel" "networkmanager" ];
       initialHashedPassword = "$y$j9T$65Xrap.UjdKYFNZ3RV9Wj/$lhSQnO8PCobbQE3Ok92yzWA2cTmBYwTN/MpnzTrMzB5";
     };
 
     hjem.users."${user}" = {
       directory = "/home/${user}";
       files.".config/user-dirs.dirs".text = ''
-        XDG_DOCUMENTS_DIR="$HOME/local_documents"
-        XDG_DOWNLOAD_DIR="$HOME/local_downloads"
-        XDG_MUSIC_DIR="$HOME/local_music"
-        XDG_PICTURES_DIR="$HOME/local_pictures"
-        XDG_DESKTOP_DIR="$HOME/.desktop"
+        XDG_DOCUMENTS_DIR  = "${config.preferences.xdg.documents}"
+        XDG_DOWNLOAD_DIR   = "${config.preferences.xdg.downloads}"
+        XDG_MUSIC_DIR      = "${config.preferences.xdg.music}"
+        XDG_PICTURES_DIR   = "${config.preferences.xdg.pictures}"
+        XDG_DESKTOP_DIR    = "${config.preferences.xdg.desktop}"
       '';
     };
 
@@ -58,31 +51,29 @@ in {
     };
 
     nixpkgs.config.allowUnfree = false;
-
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      # t14s AMD hardware
+      "cnijfilter2" # Pixma printer drivers
+    ];
 
     networking.hostName = "${host}";
 
+    ### Auto login + launch niri session
+
     services.greetd = {
       enable = true;
-      useTextGreeter = true;
       settings = {
         initial_session = {
-          command = lib.getExe' config.programs.niri.package "niri-session";
-          user = user;
+          command = "${self.packages.${pkgs.stdenv.hostPlatform.system}.niri}/bin/niri-session";
+          user = "${user}";
         };
         default_session = {
-          command = "${lib.getExe pkgs.tuigreet} --time --asterisks --remember --remember-user-session -cmd ${lib.getExe' config.programs.niri.package "niri-session"}";
+          command = "${pkgs.tuigreet}/bin/tuigreet --greeting 'Welcome to NixOS!' --asterisks --remember --remember-user-session --time -cmd ${self.packages.${pkgs.stdenv.hostPlatform.system}.niri}/bin/niri-session";
           user = "greeter";
         };
       };
     };
-    # nixpkgs only sets restartIfChanged=false; wrap rebuilds change the
-    # niri-session store path in greetd.toml and would otherwise stop greetd.
-    systemd.services.greetd.stopIfChanged = false;
-    # Focusrite Scarlett 2i2 4th Gen (USB pid 0x8219 — 0x8212 is 3rd gen)
-    boot.extraModprobeConfig = ''
-      options snd_usb_audio vid=0x1235 pid=0x8219 device_setup=1
-    '';
+
     ### DISK
 
     boot.initrd.luks.devices = {

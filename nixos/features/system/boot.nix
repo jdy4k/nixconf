@@ -1,5 +1,5 @@
 { lib, ... }: {
-  flake.nixosModules.system = { pkgs, ... }: {
+  flake.nixosModules.system = { pkgs, config, ... }: {
     boot.loader = {
       systemd-boot.enable = lib.mkForce false;
       efi.canTouchEfiVariables = true;
@@ -31,6 +31,15 @@
         "rd.systemd.show_status=auto"
       ];
       kernelModules = ["mt7921e" "coretemp" "cpuid" "v4l2loopback"];
+    };
+
+    services.xserver.enable = true;
+    services.displayManager.gdm.enable = true;
+    services.displayManager.defaultSession = "niri";
+    
+    services.displayManager.autoLogin = {
+      enable = true;
+      user = "${config.preferences.user.name}";
     };
   };
 }

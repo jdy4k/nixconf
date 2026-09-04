@@ -63,8 +63,6 @@
       "/root"
     ];
     files = [
-      # "/etc/machine-id"
-      # Add more files you want to persist
     ];
   };
 
