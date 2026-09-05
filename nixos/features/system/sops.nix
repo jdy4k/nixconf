@@ -63,9 +63,9 @@
     };
     hjem.users.${config.preferences.user.name}.files = {
       ".ssh/cluster_access_key_ed25519.pub".text = "ssh-ed25519 AAAAC3... cluster-access";
-      ".ssh/github_deploy_key_ed25519.pub".text = "ssh-ed25519 AAAAC3... github deploy";
+      ".ssh/github_deploy_key_ed25519.pub".text = "ssh-ed25519 AAAAC3... github-deploy";
       ".ssh/config".text = ''
-Include /run/secrets-rendered/ssh_config_cluster
+Include /run/secrets/rendered/ssh_config_cluster
 
 Host github.com
   HostName github.com
