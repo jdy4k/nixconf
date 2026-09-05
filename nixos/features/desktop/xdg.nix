@@ -37,12 +37,12 @@
       enable = true;
       defaultApplications = {
         # Browser
-        "x-scheme-handler/http" = "librewolf.desktop";
-        "x-scheme-handler/https" = "librewolf.desktop";
-        "x-scheme-handler/about" = "librewolf.desktop";
-        "x-scheme-handler/unknown" = "librewolf.desktop";
-        "text/html" = "librewolf.desktop";
-        "application/xhtml+xml" = "librewolf.desktop";
+        "x-scheme-handler/http" = "helium.desktop";
+        "x-scheme-handler/https" = "helium.desktop";
+        "x-scheme-handler/about" = "helium.desktop";
+        "x-scheme-handler/unknown" = "helium.desktop";
+        "text/html" = "helium.desktop";
+        "application/xhtml+xml" = "helium.desktop";
 
         "inode/directory" = "pcmanfm.desktop";
 

@@ -3,12 +3,12 @@
 in {
   flake.nixosConfigurations."${host}" = inputs.nixpkgs.lib.nixosSystem {
     modules = [
+      inputs.helium-flake.nixosModules.default
       inputs.hjem.nixosModules.default
       inputs.disko.nixosModules.disko
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.impermanence.nixosModules.impermanence
-      inputs.nixvim.nixosModules.nixvim  
-
+      inputs.nixvim.nixosModules.nixvim
       self.nixosModules."host-${host}"
     ];
   };
@@ -28,6 +28,7 @@ in {
       self.nixosModules.cli
       self.nixosModules.services
       self.nixosModules.mullvad
+      self.nixosModules.forticlient
 
       self.nixosModules.gaming
       self.nixosModules.discord

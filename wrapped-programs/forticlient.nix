@@ -4,7 +4,6 @@
   ...
 }: {
   perSystem = {pkgs, ...}: let
-    browser = lib.getExe pkgs.chromium;
     openforti = "${pkgs.openfortivpn}/bin/openfortivpn";
 
     forticlient = pkgs.writeTextFile {
@@ -29,7 +28,7 @@
                 
                 if [ -n "$TARGET_URL" ]; then
                     echo "Launching browser for authentication..."
-                    ${browser} "$TARGET_URL" &
+                    $BROWSER "$TARGET_URL" &
                 fi
             fi
         done
