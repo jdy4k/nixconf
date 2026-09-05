@@ -14,6 +14,10 @@
     };
     impermanence.url = "github:nix-community/impermanence";
     
+    # SOPS
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     # Dendric pattern
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";

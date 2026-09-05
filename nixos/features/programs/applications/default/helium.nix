@@ -6,6 +6,7 @@
         "--ozone-platform=wayland"
         "--ozone-platform-hint=auto"
         "--enable-features=UseOzonePlatform,AcceleratedVideoDecodeLinuxGL,WaylandWindowDecorations"
+        "--password-store=basic"
       ];
       policies = {
         "BrowserSignin" = 0;

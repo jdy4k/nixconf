@@ -9,6 +9,7 @@ in {
       inputs.lanzaboote.nixosModules.lanzaboote
       inputs.impermanence.nixosModules.impermanence
       inputs.nixvim.nixosModules.nixvim
+      inputs.sops-nix.nixosModules.sops
       self.nixosModules."host-${host}"
     ];
   };
