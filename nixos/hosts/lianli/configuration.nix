@@ -77,10 +77,6 @@ in {
       videos = "videos";
     };
 
-    # nixpkgs only sets restartIfChanged=false; wrap rebuilds change the
-    # niri-session store path in greetd.toml and would otherwise stop greetd.
-    #systemd.services.greetd.stopIfChanged = false;
-
     # Focusrite Scarlett 2i2 4th Gen (USB pid 0x8219 — 0x8212 is 3rd gen)
     boot.extraModprobeConfig = ''
       options snd_usb_audio vid=0x1235 pid=0x8219 device_setup=1
