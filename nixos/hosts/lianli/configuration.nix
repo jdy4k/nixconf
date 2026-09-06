@@ -37,6 +37,7 @@ in {
       self.nixosModules.libreoffice
       self.nixosModules.gimp
       self.nixosModules.mpd
+      self.nixosModules.anki
     ];
 
     preferences.user.name = "jdy4k";

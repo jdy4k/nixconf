@@ -1,0 +1,71 @@
+diff '--color=auto' -ru --no-dereference a/Japanese/audio.py b/Japanese/audio.py
+--- a/Japanese/audio.py	1969-12-31 19:00:01.000000000 -0500
++++ b/Japanese/audio.py	2026-09-06 00:54:36.309943414 -0400
+@@ -5,6 +5,9 @@
+ import concurrent.futures
+ import itertools
+ import pathlib
++import os
++import pathlib
++import typing
+ from collections.abc import Collection, Iterable, Sequence
+ from concurrent.futures import Future
+ from typing import Any, Callable, Optional
+@@ -233,10 +236,14 @@
+ 
+ class AnkiAudioSourceManagerFactory(AudioSourceManagerFactory):
+     _config: JapaneseConfig
+-    _db_path: Optional[pathlib.Path] = None
++    _db_path: typing.Optional[pathlib.Path] = None
+ 
+     def __init__(self, config: JapaneseConfig) -> None:
+         super().__init__(config)
++        env_dir = os.getenv("ANKI_JAPANESE_DIR")
++        base_dir = pathlib.Path(os.path.expandvars(env_dir)).expanduser() if env_dir else pathlib.Path("~/.local/share/Anki2/Japanese").expanduser()
++        base_dir.mkdir(parents=True, exist_ok=True)
++        self._db_path = base_dir / "audio.db" if base_dir else None
+ 
+     def request_new_session(self, db: Sqlite3Buddy) -> AnkiAudioSourceManager:
+         """
+diff '--color=auto' -ru --no-dereference a/Japanese/helpers/file_ops.py b/Japanese/helpers/file_ops.py
+--- a/Japanese/helpers/file_ops.py	2026-09-06 00:32:51.848017846 -0400
++++ b/Japanese/helpers/file_ops.py	1969-12-31 19:00:01.000000000 -0500
+@@ -52,9 +52,12 @@
+ @functools.cache
+ def user_files_dir() -> pathlib.Path:
+     """Return path to the user files directory."""
+-    for parent_dir in walk_parents(__file__):
+-        if (dir_path := parent_dir.joinpath("user_files")).is_dir():
+-            return dir_path
++    if pathlib.Path(os.getenv("ANKI_JAPANESE_DIR")).is_dir():
++        return pathlib.Path(os.getenv("ANKI_JAPANESE_DIR"))
++    else:
++        for parent_dir in walk_parents(__file__):
++            if (dir_path := parent_dir.joinpath("user_files")).is_dir():
++                return dir_path
+     raise RuntimeError("couldn't find user_files directory")
+ 
+ 
+diff '--color=auto' -ru --no-dereference a/Japanese/pitch_accents/acc_dict_mgr_2.py b/Japanese/pitch_accents/acc_dict_mgr_2.py
+--- a/Japanese/pitch_accents/acc_dict_mgr_2.py	1969-12-31 19:00:01.000000000 -0500
++++ b/Japanese/pitch_accents/acc_dict_mgr_2.py	2026-09-06 00:55:21.240276524 -0400
+@@ -223,9 +223,16 @@
+         upd_file_path: typing.Optional[pathlib.Path] = None,
+         user_accents_path: typing.Optional[pathlib.Path] = None,
+     ) -> None:
+-        self._db_path = db_path or self._db_path
+-        self._upd_file = upd_file_path or self._upd_file
+-        self._user_accents_file = user_accents_path or self._user_accents_file
++        env_dir = os.getenv("ANKI_JAPANESE_DIR")
++        base_dir = pathlib.Path(os.path.expandvars(env_dir)).expanduser() if env_dir else pathlib.Path("~/.local/share/Anki2/Japanese").expanduser()
++        base_dir.mkdir(parents=True, exist_ok=True)
++        default_db = base_dir / "pitch_accents.db" if base_dir else None
++        default_upd = base_dir / "formatted_accents_updated" if base_dir else None
++        default_user = base_dir / "user_data.csv" if base_dir else None
++
++        self._db_path = db_path or self._db_path or default_db
++        self._upd_file = upd_file_path or self._upd_file or default_upd
++        self._user_accents_file = user_accents_path or self._user_accents_file or default_user
+ 
+     def mk_writer(self, db: Sqlite3Buddy):
+         return SqliteAccDictWriter(db, upd_file=self._upd_file, user_accents_file=self._user_accents_file)
