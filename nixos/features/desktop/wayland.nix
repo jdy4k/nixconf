@@ -19,6 +19,7 @@
     environment.systemPackages = [
       selfpkgs.kitty
       selfpkgs.fish
+      pkgs.zellij
       pkgs.pcmanfm
     ];
 

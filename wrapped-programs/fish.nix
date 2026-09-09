@@ -79,6 +79,9 @@
 
         alias clear "command clear; commandline -f clear-screen"
         alias lf "yazi"
+        alias lx "ls --color -1 | column"
+        alias zri "zellij run --in-place --start-suspended --"
+        alias zj "zellij -l welcome"
       '';
   in {
     packages.fish = inputs.wrappers.lib.wrapPackage {

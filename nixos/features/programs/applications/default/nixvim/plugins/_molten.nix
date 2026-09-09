@@ -1,18 +1,19 @@
 { lib, pkgs, ...} : let
-  pyEnv = pkgs.python3.withPackages 
-    (p: with p; [
-      pandas
-      requests
-      pynvim
-      jupyter-client
-      cairosvg
-      ipython
-      nbformat
-      ipykernel
-      matplotlib
-      pandas
-      numpy
-    ]);
+  pyPackages = p: with p; [
+    pandas
+    requests
+    pynvim
+    jupyter-client
+    cairosvg
+    ipython
+    nbformat
+    ipykernel
+    matplotlib
+    pandas
+    numpy
+  ];
+
+  pyEnv = pkgs.python3.withPackages pyPackages;
 
   rPackages = with pkgs.rPackages; [
     tidyverse
@@ -57,6 +58,7 @@
     # accepts --highlight-style (https://github.com/NixOS/nixpkgs/issues/519484).
     quarto = (pkgs.quarto.override {
       extraRPackages = rPackages;
+      extraPythonPackages = pyPackages;
     }).overrideAttrs (old: {
       postFixup = (old.postFixup or "") + ''
         substituteInPlace $out/bin/quarto.js \
@@ -130,7 +132,13 @@ in
         { 
           mode = "n"; 
           key = "<leader>mx"; 
-          action = ":w<CR>:!quarto render % --to html && xdg-open %:r.html<CR>"; 
+          action = ":MoltenExportOutput!<CR>:w<CR>:!quarto render % --to html && xdg-open %:r.html<CR>"; 
+          options = { silent = true; desc = "Render and open HTML"; }; 
+        }
+        { 
+          mode = "n"; 
+          key = "<leader>mq"; 
+          action = ":!quarto render % --to html --execute && xdg-open %:r.html<CR>"; 
           options = { silent = true; desc = "Render and open HTML"; }; 
         }
       ];
@@ -143,9 +151,81 @@ in
       vim.env.JUPYTER_PATH = "${jupyterKernels}"
     '';
 
+    # extraConfigLua = ''
+    #   imb = function(e) -- init molten buffer
+    #       vim.schedule(function()
+    #           local kernels = vim.fn.MoltenAvailableKernels()
+    #           local try_kernel_name = function()
+    #               local metadata = vim.json.decode(io.open(e.file, "r"):read("a"))["metadata"]
+    #               return metadata.kernelspec.name
+    #           end
+    #           local ok, kernel_name = pcall(try_kernel_name)
+    #           if not ok or not vim.tbl_contains(kernels, kernel_name) then
+    #               kernel_name = nil
+    #               local venv = os.getenv("VIRTUAL_ENV") or os.getenv("CONDA_PREFIX")
+    #               if venv ~= nil then
+    #                   kernel_name = string.match(venv, "/.+/(.+)")
+    #               end
+    #           end
+    #           if kernel_name ~= nil and vim.tbl_contains(kernels, kernel_name) then
+    #               vim.cmd(("MoltenInit %s"):format(kernel_name))
+    #           end
+    #           vim.cmd("MoltenImportOutput")
+    #       end)
+    #   end
+    # '';
+
     files."ftplugin/markdown.lua".extraConfigLua = ''
         require("quarto").activate()
       '';
+
+    autoCmd = [
+      # {
+      #   callback = { __raw = "imb"; };
+      #   event = [
+      #     "BufAdd"
+      #     ];
+      #   pattern = [
+      #     "*.ipynb"
+      #   ];
+      # }
+      {
+        command = "MoltenInit"; 
+        event = [ "BufEnter" ];
+        pattern = [ "*.ipynb" "*.qmd" ];
+      }
+      # {
+      #   callback = ''
+      #   function(e)
+      #       if vim.api.nvim_get_vvar("vim_did_enter") ~= 1 then
+      #         imb(e)
+      #       end
+      #   end
+      #   '';
+      #   event = [
+      #     "BufEnter"
+      #     ];
+      #   pattern = [
+      #     "*.ipynb"
+      #   ];
+      # }
+      # {
+      #   callback = ''
+      #   function()
+      #       if require("molten.status").initialized() == "Molten" then
+      #         vim.cmd("MoltenExportOutput!")
+      #       end
+      #   end
+      #   '';
+      #   event = [
+      #     "BufWritePost"
+      #     ];
+      #   pattern = [
+      #     "*.ipynb"
+      #   ];
+      # }
+    ];
+
 
     plugins = {
       otter = {

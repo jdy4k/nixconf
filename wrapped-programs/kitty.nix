@@ -12,11 +12,11 @@
     kittyConf =
       pkgs.writeText "kitty.conf"
       ''
-      font_size 16.0
+      font_size 14.0
 
       font_family "FiraCode Nerd Font"
 
-      window_padding_width 12
+      window_padding_width 4
 
       background #282828
       foreground #ebdbb2

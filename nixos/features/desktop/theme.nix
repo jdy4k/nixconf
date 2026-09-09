@@ -1,5 +1,5 @@
 { ... }: {
-  flake.nixosModules.desktop = { pkgs, lib, ... }: let
+  flake.nixosModules.desktop = { pkgs, lib, config, ... }: let
     # Note: pkgs.gruvbox-dark-gtk takes no variant arguments, and the
     # variant-capable gruvbox-gtk-theme was removed from nixpkgs
     # (gtk-engine-murrine is gone). "gruvbox-dark" is the installed name.
@@ -31,6 +31,8 @@
     qt = {
       enable = true;
       platformTheme = "gnome";
+      # platformTheme = "qt5ct";
+      #style = "kvantum";
       style = "adwaita-dark";
     };
 
@@ -52,9 +54,42 @@
       ];
     };
 
+  #hjem.users.${config.preferences.user.name} = {
+  #  enable = true;
+    
+    # Write the Kvantum config file directly into ~/.config/Kvantum/kvantum.kvconfig
+    # xdg.config.files = {
+    #   "Kvantum/kvantum.kvconfig".text = ''
+    #     [General]
+    #     theme=Gruvbox-Dark-Brown
+    #   '';
+
+    #   "Kvantum/Gruvbox-Dark-Brown".source =
+    #   "${pkgs.gruvbox-kvantum}/share/Kvantum/Gruvbox-Dark-Brown";
+
+    #   # Configure qt5ct to use Kvantum
+    #   "qt5ct/qt5ct.conf".text = ''
+    #     [Appearance]
+    #     style=kvantum
+    #   '';
+
+    #   # Configure qt6ct to use Kvantum
+    #   "qt6ct/qt6ct.conf".text = ''
+    #     [Appearance]
+    #     style=kvantum
+    #   '';
+    # };
+    #};
+
     environment.systemPackages = [
       theme-package
       icon-theme-package
+
+      #pkgs.gruvbox-kvantum
+      #pkgs.libsForQt5.qt5ct
+      #pkgs.qt6Packages.qt6ct
+      #pkgs.libsForQt5.qtstyleplugin-kvantum
+      #pkgs.qt6Packages.qtstyleplugin-kvantum
 
       pkgs.adwaita-icon-theme
       pkgs.gtk3
