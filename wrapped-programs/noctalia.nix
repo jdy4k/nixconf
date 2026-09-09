@@ -60,7 +60,7 @@
             floating = false;
             marginHorizontal = 0.25;
             marginVertical = 0.25;
-            monitors = [ "DP-2" ];
+            monitors = [ "DP-2" "eDP-1" ];
             outerCorners = false;
             position = "top";
             showCapsule = false;
