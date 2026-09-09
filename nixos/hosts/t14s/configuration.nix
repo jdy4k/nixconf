@@ -36,6 +36,20 @@ in {
       self.nixosModules.anki
     ];
 
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      # t14s AMD hardware
+      "broadcom-bt-firmware"
+      "b43-firmware"
+      "xone-dongle-firmware"
+      "facetimehd-calibration"
+      "facetimehd-firmware"
+
+      "steam"
+      "steam-original"
+      "steam-unwrapped"
+      "steam-run"
+    ];
+
     preferences.user.name = "jdy4k";
     preferences.user.email = "jhosler02@gmail.com";
     preferences.host.name = "t14s";
@@ -62,16 +76,6 @@ in {
       templates = ".xdg/templates";
       videos = "videos";
     };
-
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-      # t14s AMD hardware
-      "broadcom-bt-firmware"
-      "b43-firmware"
-      "xone-dongle-firmware"
-      "facetimehd-calibration"
-      "facetimehd-firmware"
-      "cnijfilter2" # Pixma printer drivers
-    ];
 
     services.keyd = {
       enable = true;

@@ -1,11 +1,5 @@
 {
-  flake.nixosModules.gaming = { pkgs, lib, ...}: {
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-      "steam"
-      "steam-original"
-      "steam-unwrapped"
-      "steam-run"
-    ];
+  flake.nixosModules.gaming = { pkgs, ...}: {
     environment.systemPackages = with pkgs; [
       steam-run
       lutris

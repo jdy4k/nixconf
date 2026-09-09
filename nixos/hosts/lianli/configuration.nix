@@ -14,7 +14,7 @@ in {
     ];
   };
 
-  flake.nixosModules."host-${host}" = { ... }: {
+  flake.nixosModules."host-${host}" = { lib, ... }: {
     imports = [
       ./_hardware-configuration.nix
       ./_disk-configuration.nix
@@ -38,6 +38,13 @@ in {
       self.nixosModules.gimp
       self.nixosModules.mpd
       self.nixosModules.anki
+    ];
+
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+      "steam"
+      "steam-original"
+      "steam-unwrapped"
+      "steam-run"
     ];
 
     preferences.user.name = "jdy4k";
